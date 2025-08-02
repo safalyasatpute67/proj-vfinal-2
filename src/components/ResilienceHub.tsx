@@ -10,7 +10,8 @@ import {
   BookOpen, 
   Shield,
   FileText,
-  AlertTriangle
+  AlertTriangle,
+  Siren
 } from 'lucide-react';
 
 export const ResilienceHub = () => {
@@ -41,24 +42,27 @@ export const ResilienceHub = () => {
           <Shield className="w-5 h-5 mr-2" />
           Resilience Hub
         </h3>
-        <Badge variant="outline">4 Resources</Badge>
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline" className="animate-pulse">Live</Badge>
+          <Badge variant="outline">4 Resources</Badge>
+        </div>
       </div>
 
       {/* Quick Actions */}
-      <Card className="border-l-4 border-l-primary">
+      <Card className="border-l-4 border-l-primary hover-glow animate-fade-in">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center">
-            <AlertTriangle className="w-4 h-4 mr-2" />
+            <Siren className="w-4 h-4 mr-2 animate-bounce-subtle" />
             Emergency Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="grid grid-cols-1 gap-2">
-            <Button variant="destructive" size="sm" className="justify-start">
+            <Button variant="destructive" size="sm" className="justify-start hover-scale animate-pulse-glow">
               <Phone className="w-4 h-4 mr-2" />
               Emergency Helpline: 112
             </Button>
-            <Button variant="outline" size="sm" className="justify-start">
+            <Button variant="outline" size="sm" className="justify-start hover-scale">
               <Download className="w-4 h-4 mr-2" />
               Download Emergency App
             </Button>
@@ -68,9 +72,12 @@ export const ResilienceHub = () => {
 
       {/* Resources */}
       <div className="space-y-3">
-        <h4 className="font-medium text-sm">Disaster Preparedness Resources</h4>
+        <h4 className="font-medium text-sm flex items-center">
+          <BookOpen className="w-4 h-4 mr-2" />
+          Disaster Preparedness Resources
+        </h4>
         {resilienceResources.map((resource, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
+          <Card key={index} className="interactive-card animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between space-x-3">
                 <div className="flex-1 min-w-0">
@@ -86,7 +93,7 @@ export const ResilienceHub = () => {
                     {resource.description}
                   </p>
                 </div>
-                <Button variant="ghost" size="sm" className="flex-shrink-0">
+                <Button variant="ghost" size="sm" className="flex-shrink-0 hover-scale">
                   <ExternalLink className="w-4 h-4" />
                 </Button>
               </div>
@@ -96,20 +103,29 @@ export const ResilienceHub = () => {
       </div>
 
       {/* Weather Alerts */}
-      <Card className="border-l-4 border-l-warning">
+      <Card className="border-l-4 border-l-warning hover-glow animate-fade-in">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Today's Weather Alerts</CardTitle>
+          <CardTitle className="text-sm flex items-center">
+            <AlertTriangle className="w-4 h-4 mr-2 text-warning" />
+            Today's Weather Alerts
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm">Heat Wave Warning</span>
+          <div className="flex items-center justify-between hover-scale p-2 rounded transition-colors hover:bg-muted/50">
+            <span className="text-sm flex items-center">
+              <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+              Heat Wave Warning
+            </span>
             <Badge variant="secondary">Rajasthan</Badge>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm">Heavy Rain Alert</span>
+          <div className="flex items-center justify-between hover-scale p-2 rounded transition-colors hover:bg-muted/50">
+            <span className="text-sm flex items-center">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+              Heavy Rain Alert
+            </span>
             <Badge variant="secondary">Kerala</Badge>
           </div>
-          <Button variant="outline" size="sm" className="w-full mt-2">
+          <Button variant="outline" size="sm" className="w-full mt-2 hover-scale">
             View All Weather Alerts
           </Button>
         </CardContent>

@@ -127,9 +127,23 @@ All colors MUST be HSL.
     background: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
   }
 
+  /* Interactive hover effects */
+  .hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
   /* Severity indicator styles */
   .severity-high {
-    @apply bg-red-500 text-white;
+    @apply bg-red-500 text-white animate-pulse-glow;
   }
 
   .severity-medium {
@@ -140,8 +154,43 @@ All colors MUST be HSL.
     @apply bg-yellow-500 text-black;
   }
 
+  /* Interactive elements */
+  .interactive-card {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer;
+  }
+
+  .pulse-dot {
+    @apply relative;
+  }
+
+  .pulse-dot::before {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-current animate-ping opacity-20;
+  }
+
   /* Map container styles */
   .leaflet-container {
-    @apply rounded-lg border border-border;
+    @apply rounded-lg border border-border transition-all duration-300;
+  }
+
+  .leaflet-container:hover {
+    @apply border-primary;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary;
   }
 }
