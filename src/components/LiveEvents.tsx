@@ -1,20 +1,15 @@
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { CrisisEvent } from '@/data/mockData';
-import { Clock, MapPin, ExternalLink, Search, Filter, Zap, Eye } from 'lucide-react';
+import { Clock, MapPin, ExternalLink } from 'lucide-react';
 
 interface LiveEventsProps {
   events: CrisisEvent[];
   onEventSelect: (event: CrisisEvent) => void;
-  searchQuery?: string;
 }
 
-export const LiveEvents = ({ events, onEventSelect, searchQuery }: LiveEventsProps) => {
-  const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
-  const [sortBy, setSortBy] = useState<'time' | 'severity'>('time');
+export const LiveEvents = ({ events, onEventSelect }: LiveEventsProps) => {
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
       case 'High': return 'destructive';
@@ -33,96 +28,40 @@ export const LiveEvents = ({ events, onEventSelect, searchQuery }: LiveEventsPro
     }
   };
 
-  const sortedEvents = [...events].sort((a, b) => {
-    if (sortBy === 'severity') {
-      const severityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
-      return severityOrder[b.severity as keyof typeof severityOrder] - severityOrder[a.severity as keyof typeof severityOrder];
-    }
-    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-  });
-
-  const highlightText = (text: string, query: string) => {
-    if (!query) return text;
-    const parts = text.split(new RegExp(`(${query})`, 'gi'));
-    return parts.map((part, index) => 
-      part.toLowerCase() === query.toLowerCase() ? 
-        <mark key={index} className="bg-primary/20 text-primary">{part}</mark> : part
-    );
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center">
-          <Zap className="w-5 h-5 mr-2 animate-pulse" />
-          Live Events
-        </h3>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant={sortBy === 'time' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSortBy('time')}
-            className="hover-scale"
-          >
-            <Clock className="w-4 h-4 mr-1" />
-            Time
-          </Button>
-          <Button
-            variant={sortBy === 'severity' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSortBy('severity')}
-            className="hover-scale"
-          >
-            <Filter className="w-4 h-4 mr-1" />
-            Severity
-          </Button>
-        </div>
+        <h3 className="text-lg font-semibold">Recent Events</h3>
+        <Badge variant="outline">{events.length} Total</Badge>
       </div>
       
-      <div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
-        {sortedEvents.length === 0 ? (
-          <Card className="animate-fade-in">
-            <CardContent className="p-8 text-center">
-              <div className="text-muted-foreground">
-                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No events match your current filters</p>
-                <p className="text-sm">Try adjusting your search criteria</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          sortedEvents.map((event, index) => (
+      <div className="space-y-3 max-h-[500px] overflow-y-auto">
+        {events.map((event) => (
           <Card 
             key={event.id} 
-            className="interactive-card hover-glow animate-fade-in"
-            style={{ animationDelay: `${index * 0.1}s` }}
+            className="cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => onEventSelect(event)}
           >
             <CardContent className="p-4">
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <h4 className="font-semibold text-sm leading-tight">
-                    {highlightText(event.title, searchQuery || '')}
+                    {event.title}
                   </h4>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant={getSeverityVariant(event.severity)} className="text-xs">
-                      {event.severity}
-                    </Badge>
-                    {event.severity === 'High' && (
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    )}
-                  </div>
+                  <Badge variant={getSeverityVariant(event.severity)} className="text-xs">
+                    {event.severity}
+                  </Badge>
                 </div>
                 
                 <p className="text-xs text-muted-foreground line-clamp-2">
-                  {highlightText(event.description, searchQuery || '')}
+                  {event.description}
                 </p>
                 
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center hover-scale">
+                    <div className="flex items-center">
                       <MapPin className="w-3 h-3 mr-1 text-muted-foreground" />
-                      <span>{highlightText(event.location.name, searchQuery || '')}</span>
+                      <span>{event.location.name}</span>
                     </div>
                     <div className="flex items-center">
                       <Clock className="w-3 h-3 mr-1 text-muted-foreground" />
@@ -135,19 +74,18 @@ export const LiveEvents = ({ events, onEventSelect, searchQuery }: LiveEventsPro
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <Badge variant="outline" className="text-xs hover-scale">
+                  <Badge variant="outline" className="text-xs">
                     {event.eventType}
                   </Badge>
-                  <Button variant="ghost" size="sm" className="h-6 px-2 text-xs hover-scale">
-                    <Eye className="w-3 h-3 mr-1" />
-                    View Details
+                  <Button variant="ghost" size="sm" className="h-6 px-2 text-xs">
+                    <ExternalLink className="w-3 h-3 mr-1" />
+                    Details
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))
-        )}
+        ))}
       </div>
     </div>
   );
